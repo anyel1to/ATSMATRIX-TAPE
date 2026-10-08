@@ -137,8 +137,8 @@ void write_csv(const std::vector<Tick>& tape, const std::string& path) {
 void render(const std::vector<Tick>& tape, int upto, const std::string& path) {
   Image im(W, H);
   im.fill(0, 0, W, H, 12, 16, 22);
-  for (int y = 48; y < 520; y += 40) {
-    for (int x = 36; x < 900; ++x) im.blend(x, y, 80, 96, 120, 0.13f);
+  for (int y = 72; y < 500; y += 36) {
+    for (int x = 78; x < 910; ++x) im.blend(x, y, 80, 96, 120, 0.12f);
   }
   double lo = 1e9, hi = -1e9;
   for (int i = 0; i <= upto; ++i) {
@@ -150,10 +150,10 @@ void render(const std::vector<Tick>& tape, int upto, const std::string& path) {
   hi += pad;
   auto py = [&](double price) {
     double u = (price - lo) / (hi - lo);
-    return 500 - static_cast<int>(u * 430);
+    return 500 - static_cast<int>(u * 400);
   };
   auto px = [&](int i) {
-    return 56 + static_cast<int>((i / static_cast<double>(TICKS - 1)) * 800);
+    return 78 + static_cast<int>((i / static_cast<double>(TICKS - 1)) * 820);
   };
 
   const int group = 4;
@@ -179,9 +179,9 @@ void render(const std::vector<Tick>& tape, int upto, const std::string& path) {
     int top = py(std::max(o, c));
     int bot = py(std::min(o, c));
     if (bot - top < 3) bot = top + 3;
-    im.fill(x, top, 7, bot - top, r, gg, bb);
-    int vh = static_cast<int>(std::min(46.0, vol * 0.45));
-    im.fill(x, 548 - vh, 7, vh, r, gg, bb);
+    im.fill(x, top, 6, bot - top, r, gg, bb);
+    int vh = static_cast<int>(std::min(40.0, vol * 0.4));
+    im.fill(x, 548 - vh, 6, vh, r, gg, bb);
   }
 
   for (int i = 0; i <= upto; ++i) {
@@ -196,8 +196,9 @@ void render(const std::vector<Tick>& tape, int upto, const std::string& path) {
 
   const Tick& now = tape[static_cast<size_t>(upto)];
   int ly = py(now.last);
-  for (int x = 48; x < 880; ++x) im.blend(x, ly, 232, 236, 242, 0.55f);
+  for (int x = 78; x < 910; ++x) im.blend(x, ly, 232, 236, 242, 0.45f);
   im.disc(px(upto), ly, 4, 232, 236, 242, 1.f);
+  for (int y = 56; y < 560; ++y) im.blend(928, y, 80, 96, 120, 0.35f);
 
   double maxsz = 1;
   for (int k = 0; k < 5; ++k) {
@@ -237,7 +238,7 @@ int main(int argc, char** argv) {
   std::string dir = argc > 1 ? argv[1] : "build";
   auto tape = simulate();
   write_csv(tape, dir + "/tape.csv");
-  for (int i = 16; i < TICKS; i += 8) {
+  for (int i = 8; i < TICKS; i += 2) {
     std::ostringstream name;
     name << dir << "/frame_" << i << ".ppm";
     render(tape, i, name.str());

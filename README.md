@@ -26,7 +26,13 @@ Chop. Small range, low confidence. A flat bias is a result, not a failure.
 
 ![Chop desk](docs/desk-chop.png)
 
-The same session, played back.
+## Watch
+
+The session, from the open to the last print. About ten seconds. The file is `docs/tape.mp4` — open it on GitHub and it plays in the browser.
+
+[Play the desk video](docs/tape.mp4)
+
+A shorter loop is below, then the three stills the signal actually produced.
 
 ![Tape playback](docs/tape.gif)
 
@@ -34,18 +40,19 @@ Left side is the C++ raster: candles grouped from the mid, volume under them, fa
 
 ## Run
 
-You need `g++` (C++17), `rustc` + `cargo`, and Python 3 with [Pillow](https://pypi.org/project/pillow/).
+You need `g++` (C++17), `rustc` + `cargo`, `ffmpeg`, and Python 3 with [Pillow](https://pypi.org/project/pillow/).
 
 ```bash
 make
 ```
 
-That writes:
+`make` builds the C++ engine, the Rust signal, the stills, the GIF, and `docs/tape.mp4`. GitHub Actions runs the same command on every push to `main`.
 
-- `build/tape.csv` — every tick of the session
+- `docs/tape.mp4` — the desk video
+- `docs/tape.gif` — a shorter loop for the README
+- `docs/*.png` — trend, revert, chop, and the last frame
+- `build/tape.csv` — every tick
 - `build/signals.csv` — the signal beside each tick
-- `build/frame_*.png` — one composed frame along the session
-- `docs/*.png` and `docs/tape.gif` — the pictures in this README
 
 The random walk is seeded. A second `make` draws the same session.
 

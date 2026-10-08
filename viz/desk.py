@@ -37,7 +37,7 @@ def load_tape():
         return list(csv.DictReader(handle))
 
 
-def paint(base: Image.Image, sig: dict, tape_row: dict, equity: list[float], prints: list[dict]) -> Image.Image:
+def paint(base: Image.Image, sig: dict, tape_row: dict, equity: list[float], prints: list[dict], scale: tuple[float, float]) -> Image.Image:
     im = base.convert("RGBA")
     overlay = Image.new("RGBA", im.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
@@ -53,6 +53,15 @@ def paint(base: Image.Image, sig: dict, tape_row: dict, equity: list[float], pri
     last_col = (125, 214, 176, 255) if side >= 0 else (255, 138, 150, 255)
     draw.text((280, 14), f"{last:0.2f}", font=title, fill=last_col)
     draw.text((860, 14), f"tick {int(sig['i']):03d}", font=mono, fill=(168, 178, 192, 255))
+    lo, hi = scale
+    tiny = ImageFont.truetype(MONO, 12)
+
+    def price_y(price: float) -> int:
+        return 500 - int((price - lo) / (hi - lo) * 400)
+
+    for price in (hi, (hi + lo) / 2, lo):
+        draw.text((8, price_y(price) - 8), f"{price:0.2f}", font=tiny, fill=(140, 150, 164, 255))
+    draw.text((78, 556), "VOL", font=tiny, fill=(140, 150, 164, 255))
 
     draw.text((980, 52), "BOOK", font=small, fill=(140, 150, 164, 255))
     ask = float(tape_row["ask"])
@@ -98,6 +107,18 @@ def paint(base: Image.Image, sig: dict, tape_row: dict, equity: list[float], pri
     return Image.alpha_composite(im, overlay).convert("RGB")
 
 
+def card(headline: str, sub: str) -> Image.Image:
+    image = Image.new("RGB", (1200, 680), (12, 16, 22))
+    draw = ImageDraw.Draw(image)
+    small = ImageFont.truetype(FONT, 16)
+    big = ImageFont.truetype(FONTB, 64)
+    body = ImageFont.truetype(FONT, 22)
+    draw.text((72, 230), "ATSMATRIX", font=small, fill=(140, 150, 164, 255))
+    draw.text((72, 268), headline, font=big, fill=(236, 240, 246, 255))
+    draw.text((72, 360), sub, font=body, fill=(186, 194, 206, 255))
+    return image
+
+
 def main() -> int:
     DOCS.mkdir(parents=True, exist_ok=True)
     signals = {int(row["i"]): row for row in load_signals()}
@@ -121,7 +142,10 @@ def main() -> int:
                 prints.append(older_row)
             if len(prints) == 8:
                 break
-        image = paint(read_ppm(path), sig, row, equity, prints)
+        mids = [float(tape[i]["mid"]) for i in range(upto + 1) if i in tape]
+        lo, hi = min(mids), max(mids)
+        pad = max(0.15, (hi - lo) * 0.18)
+        image = paint(read_ppm(path), sig, row, equity, prints, (lo - pad, hi + pad))
         composed.append((upto, image, sig["regime"]))
         image.save(BUILD / f"{path.stem}.png", optimize=True)
 
@@ -137,7 +161,24 @@ def main() -> int:
     if composed:
         composed[-1][1].save(DOCS / "desk-last.png", optimize=True)
 
-    gif_frames = [image.resize((960, 544), Image.Resampling.LANCZOS) for _, image, _ in composed]
+    seq = BUILD / "seq"
+    seq.mkdir(exist_ok=True)
+    for old in seq.glob("*.png"):
+        old.unlink()
+    index = 1
+    intro = card("TAPE", "Simulated book. Paper signal.")
+    for _ in range(48):
+        intro.save(seq / f"{index:04d}.png")
+        index += 1
+    for _, image, _ in composed:
+        image.save(seq / f"{index:04d}.png")
+        index += 1
+    outro = card("MIT", "github.com/anyel1to/ATSMATRIX-TAPE")
+    for _ in range(48):
+        outro.save(seq / f"{index:04d}.png")
+        index += 1
+
+    gif_frames = [image.resize((960, 544), Image.Resampling.LANCZOS) for _, image, _ in composed[::4]]
     if gif_frames:
         gif_frames[0].save(
             DOCS / "tape.gif",

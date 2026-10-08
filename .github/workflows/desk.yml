@@ -1,0 +1,25 @@
+name: desk
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compilers
+        run: sudo apt-get update && sudo apt-get install -y g++ python3-pil ffmpeg
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build the desk and the video
+        run: make
+      - name: Keep the pictures
+        uses: actions/upload-artifact@v4
+        with:
+          name: tape-desk
+          path: |
+            docs/*.png
+            docs/tape.mp4
+            docs/tape.gif
