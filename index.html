@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ATSMATRIX TAPE — Paper desk</title>
+    <meta
+      name="description"
+      content="ATSMATRIX TAPE paper desk. Simulated tape, AI tips, paper orders. Broker coming soon."
+    />
+    <link rel="stylesheet" href="desk.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="top">
+        <div class="symbol">
+          <strong>TAPE</strong>
+          <span>Simulated</span>
+        </div>
+        <div class="quote">
+          <span id="last">100.00</span>
+          <span id="chg">0.00%</span>
+        </div>
+        <div class="intervals" role="tablist" aria-label="Candle size">
+          <button type="button" data-bucket="1">1</button>
+          <button type="button" data-bucket="4">4</button>
+          <button type="button" data-bucket="8" class="on">8</button>
+        </div>
+        <div class="equity">
+          <span>Paper equity</span>
+          <strong id="equity">10,000.00</strong>
+        </div>
+      </header>
+
+      <div class="stage">
+        <div class="chart-wrap">
+          <p id="ohlc" class="ohlc">Paper mode. Not a live market.</p>
+          <canvas id="chart"></canvas>
+        </div>
+        <aside class="rail">
+          <section>
+            <h2>Order</h2>
+            <div class="ticket">
+              <button id="buy" type="button">Buy</button>
+              <button id="sell" type="button">Sell</button>
+            </div>
+            <label class="size">
+              Size
+              <input id="size" type="number" min="1" max="100" step="1" value="1" inputmode="numeric" />
+            </label>
+            <dl class="stats">
+              <div><dt>Cash</dt><dd id="cash">10,000.00</dd></div>
+              <div><dt>Position</dt><dd id="pos">0</dd></div>
+              <div><dt>Average</dt><dd id="avg">—</dd></div>
+              <div><dt>Open PnL</dt><dd id="upnl">0.00</dd></div>
+            </dl>
+            <button id="reset" type="button" class="ghost">Reset paper account</button>
+            <p id="note" class="note" role="status"></p>
+          </section>
+
+          <section>
+            <h2>AI</h2>
+            <p id="bias" class="bias">Waiting for the tape.</p>
+            <p id="tip" class="tip"></p>
+          </section>
+
+          <section class="soon">
+            <h2>Broker</h2>
+            <p>Live order routing is not connected. Paper is the only desk that runs.</p>
+            <button type="button" disabled>Coming soon</button>
+          </section>
+
+          <section>
+            <h2>Fills</h2>
+            <ol id="fills"></ol>
+          </section>
+
+          <a class="ig" href="https://www.instagram.com/atsmatrix/" target="_blank" rel="noopener noreferrer">Instagram @atsmatrix</a>
+        </aside>
+      </div>
+    </div>
+    <script src="desk.js"></script>
+  </body>
+</html>

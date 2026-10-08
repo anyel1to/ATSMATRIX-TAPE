@@ -1,0 +1,161 @@
+:root {
+  color-scheme: dark;
+  --bg: #0c0f14;
+  --panel: #131922;
+  --line: #2a3340;
+  --text: #d5dbe3;
+  --muted: #8b95a7;
+  --up: #26a69a;
+  --down: #ef5350;
+  --blue: #2962ff;
+  --font: "Segoe UI", system-ui, sans-serif;
+  --mono: "SF Mono", ui-monospace, Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+button, input { font: inherit; color: inherit; }
+
+.app {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  min-height: 52px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  background: #10151c;
+}
+
+.symbol { display: flex; align-items: baseline; gap: 8px; }
+.symbol strong { font-size: 16px; letter-spacing: 0.04em; }
+.symbol span, .equity span {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.quote { display: flex; align-items: baseline; gap: 8px; }
+#last { font-family: var(--mono); font-size: 20px; font-variant-numeric: tabular-nums; }
+#chg { font-family: var(--mono); font-size: 13px; }
+#chg.up, .up { color: var(--up); }
+#chg.down, .down { color: var(--down); }
+
+.intervals { display: flex; gap: 4px; }
+.intervals button, .ghost, .soon button, .ticket button {
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  padding: 0 10px;
+  cursor: pointer;
+}
+.intervals button.on {
+  border-color: var(--blue);
+  color: #fff;
+  background: var(--blue);
+}
+
+.equity { margin-left: auto; display: flex; align-items: baseline; gap: 8px; }
+.equity strong { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  min-height: 0;
+  flex: 1;
+}
+
+.chart-wrap { position: relative; min-height: 360px; }
+canvas { display: block; width: 100%; height: 100%; }
+.ohlc {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: auto;
+  padding: 14px;
+  border-left: 1px solid var(--line);
+  background: var(--panel);
+}
+
+h2 {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ticket { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+#buy { background: var(--up); border-color: var(--up); color: #04120f; font-weight: 700; }
+#sell { background: var(--down); border-color: var(--down); color: #1a0505; font-weight: 700; }
+
+.size { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; color: var(--muted); font-size: 13px; }
+.size input {
+  width: 88px;
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #0c0f14;
+  padding: 0 8px;
+  font-family: var(--mono);
+}
+
+.stats { margin: 12px 0; }
+.stats div { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; font-size: 13px; }
+.stats dt { color: var(--muted); }
+.stats dd { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.ghost { width: 100%; }
+.note { min-height: 1.2em; margin: 8px 0 0; color: #e7c27a; font-size: 12px; }
+.bias { margin: 0 0 6px; font-size: 15px; }
+.tip, .soon p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.soon button { width: 100%; margin-top: 10px; color: var(--muted); cursor: not-allowed; }
+
+#fills { margin: 0; padding: 0; list-style: none; }
+#fills li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+#fills:empty::before { content: "No paper fills yet."; color: var(--muted); font-family: var(--font); font-size: 13px; }
+
+.ig { color: var(--blue); font-size: 13px; }
+
+@media (max-width: 860px) {
+  .equity { margin-left: 0; }
+  .stage { grid-template-columns: 1fr; }
+  .chart-wrap { height: 58dvh; min-height: 280px; }
+  .rail { border-left: 0; border-top: 1px solid var(--line); }
+}

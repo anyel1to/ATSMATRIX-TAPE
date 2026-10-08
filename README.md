@@ -8,24 +8,29 @@
   <a href="https://github.com/anyel1to/ATSMATRIX-TAPE"><img alt="Python" src="https://img.shields.io/badge/Python-3-3776AB?style=flat-square&logo=python&logoColor=white"></a>
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-3ddc97?style=flat-square"></a>
   <a href="https://www.instagram.com/atsmatrix/"><img alt="Instagram @atsmatrix" src="https://img.shields.io/badge/Instagram-%40atsmatrix-E4405F?style=flat-square&logo=instagram&logoColor=white"></a>
-  <a href="https://atsmatrix.com"><img alt="atsmatrix.com" src="https://img.shields.io/badge/desk-atsmatrix.com-007AFF?style=flat-square"></a>
+  <a href="https://anyel1to.github.io/ATSMATRIX-TAPE/"><img alt="Live paper desk" src="https://img.shields.io/badge/demo-paper%20desk-26a69a?style=flat-square"></a>
 </p>
 
 # ATSMATRIX TAPE
 
-A trading desk you can compile. The book is simulated. The picture is drawn. The signal is a paper bias with the weights written down. Nothing here sends an order.
+A paper trading desk for a simulated tape. The live demo is a working app: candles, crosshair, buy, sell, and an AI note that uses the same score as the Rust signal. The broker button says coming soon. Nothing here sends an order.
 
-This repository is **not** a web page. There is no HTML. Three languages do three jobs:
-
-| Language | Job |
+| Piece | Job |
 | --- | --- |
-| C++17 | Synthetic limit-book tape and the frame raster |
-| Rust | Online signal: imbalance, momentum, volatility, paper PnL |
-| Python | Typography, book labels, and the PNG / GIF export |
+| Live desk | [anyel1to.github.io/ATSMATRIX-TAPE](https://anyel1to.github.io/ATSMATRIX-TAPE/) — paper orders in the browser |
+| C++17 | Synthetic book and the offline frame raster |
+| Rust | The signal weights the demo copies |
+| Python | Stills, GIF, and the desk video |
 
-It is a visualizer of a model market. It is not a brokerage, not live exchange data, and not financial advice.
+It is not a brokerage, not live exchange data, and not financial advice.
 
-## The desk
+## Live desk
+
+Buy and sell change a paper account that stays in the browser. The blue line is your average. The AI panel names the regime and a tip. Reset clears the account. Connect broker stays disabled.
+
+![Paper desk](docs/desk-app.png)
+
+## The tape
 
 Trend. The tape has been lifting. The signal sits **BID** and the paper line is the session so far.
 
