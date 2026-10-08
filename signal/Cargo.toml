@@ -1,0 +1,10 @@
+[package]
+name = "tape-signal"
+version = "0.1.0"
+edition = "2021"
+description = "ATSMATRIX TAPE signal desk. Reads the simulated tape and writes a paper bias."
+license = "MIT"
+
+[[bin]]
+name = "tape-signal"
+path = "src/main.rs"
