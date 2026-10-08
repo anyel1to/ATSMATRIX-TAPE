@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Compose ATSMATRIX TAPE frames: C++ raster plus the Rust signal."""
+"""Compose ATSMATRIX TAPE frames: C++ raster, Rust signal, agent radar."""
 
 import csv
+import math
 import sys
 from pathlib import Path
 
@@ -69,12 +70,14 @@ def paint(base: Image.Image, sig: dict, tape_row: dict, equity: list[float], pri
     for k in range(5):
         draw.text((1148, 66 + (4 - k) * 22), f"{ask + 0.01 * k:0.2f}", font=small, fill=(186, 194, 206, 255))
         draw.text((1148, 164 + k * 22), f"{bid - 0.01 * k:0.2f}", font=small, fill=(186, 194, 206, 255))
-    draw.text((980, 338), "PRINTS", font=small, fill=(140, 150, 164, 255))
-    for n, printed in enumerate(prints):
+    draw.text((980, 286), "RADAR", font=small, fill=(140, 150, 164, 255))
+    draw_radar(draw, sig, tape_row)
+    draw.text((980, 444), "PRINTS", font=small, fill=(140, 150, 164, 255))
+    for n, printed in enumerate(prints[:4]):
         side_n = int(float(printed["side"]))
         ink = (125, 214, 176, 255) if side_n > 0 else (255, 150, 160, 255)
         word = "buy" if side_n > 0 else "sell"
-        draw.text((1140, 356 + n * 22), f"{word} {float(printed['qty']):0.0f}", font=small, fill=ink)
+        draw.text((1140, 464 + n * 22), f"{word} {float(printed['qty']):0.0f}", font=small, fill=ink)
 
     panel = (28, 598, im.width - 28, 662)
     draw.rounded_rectangle(panel, radius=12, fill=(18, 22, 30, 235))
@@ -105,6 +108,60 @@ def paint(base: Image.Image, sig: dict, tape_row: dict, equity: list[float], pri
         draw.text((560, 606), "PAPER", font=small, fill=(140, 150, 164, 255))
 
     return Image.alpha_composite(im, overlay).convert("RGB")
+
+
+def draw_radar(draw: ImageDraw.ImageDraw, sig: dict, tape_row: dict) -> None:
+    cx, cy, radius = 1090, 360, 68
+    ring = (90, 110, 140, 170)
+    draw.ellipse((cx - radius, cy - radius, cx + radius, cy + radius), outline=ring)
+    draw.ellipse((cx - radius // 2, cy - radius // 2, cx + radius // 2, cy + radius // 2), outline=ring)
+    draw.line((cx - radius, cy, cx + radius, cy), fill=ring)
+    draw.line((cx, cy - radius, cx, cy + radius), fill=ring)
+    angle = (int(sig["i"]) % 48) / 48 * math.tau
+    draw.line(
+        (cx, cy, cx + math.cos(angle) * radius, cy + math.sin(angle) * radius),
+        fill=(90, 168, 255, 230),
+        width=2,
+    )
+    scores = [
+        float(sig["imbalance"]),
+        max(-1.0, min(1.0, float(sig["mom"]) * 90)),
+        max(-1.0, min(1.0, -float(sig["mom"]) * 90)),
+        float(sig["confidence"]) - 0.5,
+        int(float(tape_row["side"])) * 0.45,
+    ]
+    for index, score in enumerate(scores):
+        theta = -math.pi / 2 + index * (math.tau / 5)
+        dist = min(radius - 10, 18 + abs(score) * 46)
+        x = cx + math.cos(theta) * dist
+        y = cy + math.sin(theta) * dist
+        color = (125, 214, 176, 255) if score >= 0 else (255, 138, 150, 255)
+        draw.ellipse((x - 5, y - 5, x + 5, y + 5), fill=color)
+
+
+def banner() -> None:
+    image = Image.new("RGB", (1600, 440), (12, 16, 22))
+    draw = ImageDraw.Draw(image)
+    small = ImageFont.truetype(FONT, 22)
+    big = ImageFont.truetype(FONTB, 92)
+    body = ImageFont.truetype(FONT, 26)
+    draw.text((88, 118), "ATSMATRIX", font=small, fill=(140, 150, 164))
+    draw.text((84, 156), "TAPE", font=big, fill=(236, 240, 246))
+    draw.text((88, 278), "Paper agents. Simulated book. No brokerage.", font=body, fill=(186, 194, 206))
+    draw.text((88, 324), "instagram.com/atsmatrix", font=body, fill=(90, 168, 255))
+    cx, cy, radius = 1280, 220, 120
+    draw.ellipse((cx - radius, cy - radius, cx + radius, cy + radius), outline=(80, 100, 130))
+    draw.ellipse((cx - 70, cy - 70, cx + 70, cy + 70), outline=(80, 100, 130))
+    draw.line((cx - radius, cy, cx + radius, cy), fill=(80, 100, 130))
+    draw.line((cx, cy - radius, cx, cy + radius), fill=(80, 100, 130))
+    draw.line((cx, cy, cx + 90, cy - 70), fill=(90, 168, 255), width=3)
+    for index, color in enumerate(((125, 214, 176), (125, 214, 176), (255, 138, 150), (125, 214, 176), (255, 138, 150))):
+        theta = -math.pi / 2 + index * (math.tau / 5)
+        dist = 40 + (index % 3) * 28
+        x = cx + math.cos(theta) * dist
+        y = cy + math.sin(theta) * dist
+        draw.ellipse((x - 8, y - 8, x + 8, y + 8), fill=color)
+    image.save(DOCS / "banner.png", optimize=True)
 
 
 def card(headline: str, sub: str) -> Image.Image:
@@ -188,6 +245,7 @@ def main() -> int:
             loop=0,
             optimize=True,
         )
+    banner()
     print(f"frames {len(composed)} docs {DOCS}")
     return 0
 

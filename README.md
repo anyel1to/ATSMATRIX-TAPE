@@ -1,3 +1,16 @@
+<p align="center">
+  <img src="docs/banner.png" alt="ATSMATRIX TAPE" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/anyel1to/ATSMATRIX-TAPE"><img alt="C++17" src="https://img.shields.io/badge/C%2B%2B-17-00599C?style=flat-square&logo=cplusplus&logoColor=white"></a>
+  <a href="https://github.com/anyel1to/ATSMATRIX-TAPE"><img alt="Rust" src="https://img.shields.io/badge/Rust-signal-000000?style=flat-square&logo=rust&logoColor=white"></a>
+  <a href="https://github.com/anyel1to/ATSMATRIX-TAPE"><img alt="Python" src="https://img.shields.io/badge/Python-3-3776AB?style=flat-square&logo=python&logoColor=white"></a>
+  <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-3ddc97?style=flat-square"></a>
+  <a href="https://www.instagram.com/atsmatrix/"><img alt="Instagram @atsmatrix" src="https://img.shields.io/badge/Instagram-%40atsmatrix-E4405F?style=flat-square&logo=instagram&logoColor=white"></a>
+  <a href="https://atsmatrix.com"><img alt="atsmatrix.com" src="https://img.shields.io/badge/desk-atsmatrix.com-007AFF?style=flat-square"></a>
+</p>
+
 # ATSMATRIX TAPE
 
 A trading desk you can compile. The book is simulated. The picture is drawn. The signal is a paper bias with the weights written down. Nothing here sends an order.
@@ -25,6 +38,22 @@ Revert. Momentum and the book disagree. The signal can flip without a story atta
 Chop. Small range, low confidence. A flat bias is a result, not a failure.
 
 ![Chop desk](docs/desk-chop.png)
+
+## Agents
+
+Five house bots sit on the radar. They paper-trade the same simulated tape. They do not connect to a broker, and they cannot move money.
+
+| Bot | What it follows |
+| --- | --- |
+| Clerk | Book imbalance |
+| Drift | Short momentum |
+| Fade | The other side of that momentum |
+| Quiet | Only when confidence is already high |
+| Print | The last trade |
+
+Green is a paper bid. Red is a paper ask. Distance from the center is how hard the bot is leaning. The sweep is the clock, not a scan of a live market.
+
+On [atsmatrix.com](https://atsmatrix.com) the Tape page lets a visitor add one more paper bot and watch it on the same radar. That bot is stored in the browser. It still does not trade a real account.
 
 ## Watch
 

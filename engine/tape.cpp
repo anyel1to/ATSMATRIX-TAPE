@@ -213,10 +213,10 @@ void render(const std::vector<Tick>& tape, int upto, const std::string& path) {
   }
 
   int row = 0;
-  for (int i = upto; i >= 0 && row < 8; --i) {
+  for (int i = upto; i >= 0 && row < 4; --i) {
     const Tick& t = tape[static_cast<size_t>(i)];
     if (t.side == 0) continue;
-    int y = 360 + row * 22;
+    int y = 468 + row * 22;
     uint8_t r = t.side > 0 ? 61 : 255;
     uint8_t g = t.side > 0 ? 196 : 107;
     uint8_t b = t.side > 0 ? 154 : 128;
